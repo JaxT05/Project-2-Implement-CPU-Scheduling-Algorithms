@@ -12,6 +12,8 @@ public class Process {
     public State state = State.NEW;
     public final List<Instruction> code;
     public int programCounter = 0;
+    public int waitingTime = 0;
+    public int completionTime = -1;
 
     public Process(int pid, int arrivalTime, List<Instruction> code) {
         this.pid = pid;

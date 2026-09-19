@@ -1,16 +1,19 @@
 package minios;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Simulator {
     private final Kernel kernel;
     private final List<Process> incomingProcesses;
+    private final List<Process> allProcesses;
     private int clock = 0;
 
     public Simulator(Kernel kernel, List<Process> processes) {
         this.kernel = kernel;
         this.incomingProcesses = processes;
+        this.allProcesses = new ArrayList<>(processes);
     }
 
     public void run() {
@@ -36,18 +39,41 @@ public class Simulator {
             clock++;
         }
 
+        printAverageWaitingTime();
+    }
+
+    // Average time each process spent waiting in the Ready Queue
+    private void printAverageWaitingTime() {
+        double totalWaiting = 0;
+        for (Process p : allProcesses) {
+            totalWaiting += p.waitingTime;
+        }
+        System.out.printf("Average waiting time: %.2f ticks%n",
+                totalWaiting / allProcesses.size());
     }
 
     public static void main(String[] args) throws Exception{
             List<Process> workload = TraceParser.parseWorkload("workload.txt");
 
-            SchedulingAlgo algo = new FCFS();
+			SchedulingAlgo algo = new FCFS();
+
+			if (args.length > 0) {
+				String arg = args[0].toLowerCase();
+				algo = switch (arg) {
+					case "fcfs" -> new FCFS();
+					case "rr" -> new RR();
+					default -> null;
+				};
+
+				if (algo == null) {
+					System.out.printf("Chosen algorithm \"%s\" does not exist!\n", arg);
+					System.exit(1);
+				}
+			}
+
             Kernel kernel = new Kernel(algo);
             Simulator sim = new Simulator(kernel, workload);
 
             sim.run();
-
-
     }
-
 }

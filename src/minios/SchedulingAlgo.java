@@ -11,4 +11,10 @@ public interface SchedulingAlgo {
     // If no process is available (i.e., Ready Queue is entry),
     // return null
     Process selectNextProcess(List<Process> readyQueue);
+
+    // Preemption hook: called by the kernel after the running process has
+    // consumed one full CPU tick of its current dispatch.
+    default boolean shouldPreempt(Process running, int ticksUsed, int currentTime) {
+        return false;
+    }
 }

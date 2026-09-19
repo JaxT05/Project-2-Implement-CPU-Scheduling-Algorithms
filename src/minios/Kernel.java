@@ -9,6 +9,8 @@ public class Kernel {
     private final List<Process> readyQueue = new ArrayList<>();
     private final List<Process> waitQueue = new ArrayList<>();
     private Process runningProcess = null;
+    // Number of CPU ticks the running process has consumed since it was dispatched
+    private int ticksUsedByRunning = 0;
 
     public Kernel(SchedulingAlgo algo) {
         this.algo = algo;
@@ -41,7 +43,7 @@ public class Kernel {
             // Current process has finished.
             if (inst == null) {
                 System.out.println("[Tick " + currentTime + "] Process " + runningProcess.pid + " Terminates.");
-                terminateProcess(runningProcess);
+                terminateProcess(runningProcess, currentTime);
                 // In this case, no instruction is executed, so no CPU cycle
                 // is used. Can't advance the simulation clock. Loop
                 // back and grab the next process to execute.
@@ -69,6 +71,18 @@ public class Kernel {
                     // The instruction now finishes; load the next
                     // instruction.
                     runningProcess.programCounter++;
+                }
+
+                // Every process still sitting in the Ready Queue has been waiting during this CPU cycle.
+                for (Process p : readyQueue) {
+                    p.waitingTime++;
+                }
+
+                // Preemption check
+                ticksUsedByRunning++;
+                if (runningProcess.getCurrentInstruction() != null
+                        && algo.shouldPreempt(runningProcess, ticksUsedByRunning, currentTime)) {
+                    preemptRunningProcess(currentTime);
                 }
             }
 
@@ -105,8 +119,18 @@ public class Kernel {
         }
     }
 
-    private void terminateProcess(Process p) {
+    private void terminateProcess(Process p, int currentTime) {
         p.state = Process.State.TERMINATED;
+        p.completionTime = currentTime;
+        runningProcess = null;
+    }
+
+    // Preempt the running process
+    private void preemptRunningProcess(int currentTime) {
+        Process p = runningProcess;
+        System.out.println("[Tick " + currentTime + "] Process " + p.pid + " preempted; back to Ready Queue.");
+        p.state = Process.State.READY;
+        algo.addProcess(readyQueue, p);
         runningProcess = null;
     }
 
@@ -115,6 +139,7 @@ public class Kernel {
         if (runningProcess != null) {
             System.out.println("[Tick " + currentTime + "] Process " + runningProcess.pid + " executes.");
             runningProcess.state = Process.State.RUNNING;
+            ticksUsedByRunning = 0;
             return runningProcess;
         }else{
             return null;
