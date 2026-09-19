@@ -9,16 +9,21 @@ public class RR implements SchedulingAlgo {
 
     @Override
     public void addProcess(List<Process> readyQueue, Process p) {
-        throw new UnsupportedOperationException("TODO: implement RR.addProcess");
+        readyQueue.add(p);
     }
 
     @Override
     public Process selectNextProcess(List<Process> readyQueue) {
-        throw new UnsupportedOperationException("TODO: implement RR.selectNextProcess");
+        if (readyQueue.isEmpty()){
+            return null;
+        }
+        else{
+         return readyQueue.remove(0);
+        }
     }
 
     @Override
     public boolean shouldPreempt(Process running, int ticksUsed, int currentTime) {
-        throw new UnsupportedOperationException("TODO: implement RR.shouldPreempt");
+        return ticksUsed >= TIME_QUANTUM;
     }
 }
