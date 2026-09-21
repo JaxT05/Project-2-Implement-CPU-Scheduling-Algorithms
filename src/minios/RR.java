@@ -24,6 +24,9 @@ public class RR implements SchedulingAlgo {
 
     @Override
     public boolean shouldPreempt(Process running, int ticksUsed, int currentTime) {
-        return ticksUsed >= TIME_QUANTUM;
+        Instruction next = running.getCurrentInstruction();
+        return ticksUsed >= TIME_QUANTUM
+                && next != null
+                && next.type == Instruction.OpType.CPU;
     }
 }

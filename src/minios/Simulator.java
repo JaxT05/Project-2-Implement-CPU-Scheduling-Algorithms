@@ -61,6 +61,7 @@ public class Simulator {
 				String arg = args[0].toLowerCase();
 				algo = switch (arg) {
 					case "fcfs" -> new FCFS();
+					case "sjf" -> new SJF();
 					case "rr" -> new RR();
 					default -> null;
 				};
