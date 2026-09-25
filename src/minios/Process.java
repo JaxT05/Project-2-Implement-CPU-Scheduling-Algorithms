@@ -8,6 +8,7 @@ public class Process {
 
     public final int pid;
     public final int arrivalTime;
+    public final int requiredMemory;
 
     public State state = State.NEW;
     public final List<Instruction> code;
@@ -15,9 +16,17 @@ public class Process {
     public int waitingTime = 0;
     public int completionTime = -1;
 
-    public Process(int pid, int arrivalTime, List<Instruction> code) {
+    
+    /*
+     TODO:
+     size(limit register): read from the trace parser file
+     relocation register (base memory address): specified by the kernel
+     */
+
+    public Process(int pid, int arrivalTime, int requiredMemory, List<Instruction> code) {
         this.pid = pid;
         this.arrivalTime = arrivalTime;
+        this.requiredMemory = requiredMemory;
         this.code = new ArrayList<>(code);
     }
 

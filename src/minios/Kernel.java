@@ -17,9 +17,16 @@ public class Kernel {
     }
 
     public void admitProcess(Process p) {
+        //decide is there's sufficient memory to admit the process by calling a method of the memory management class
+        // if yes, admit the process and allocate memory to the process by calling a method of the memory management class
+        // a process will hold allocated memory space until it terminates
         p.state = Process.State.READY;
         algo.addProcess(readyQueue, p);
+        // if no, don't change the process state to ready or place it in the queue
+        //TODO: implement a separate queue (memory queue) and place the process there
     }
+
+    // create a MemoryManagement class
 
     // Called on every clock tick
     public void onClockTick(int currentTime) {
@@ -120,6 +127,8 @@ public class Kernel {
     }
 
     private void terminateProcess(Process p, int currentTime) {
+        //release the memory space by calling a method of the memory management class
+        // also check if we can now admit one or more processes from the memory queue
         p.state = Process.State.TERMINATED;
         p.completionTime = currentTime;
         runningProcess = null;
