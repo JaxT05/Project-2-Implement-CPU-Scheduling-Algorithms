@@ -27,7 +27,7 @@ public class Simulator {
                 Process p = it.next();
                 if (p.arrivalTime == clock) {
                     System.out.println("[Tick " + clock + "] Process " + p.pid + " arrives.");
-                    kernel.admitProcess(p);
+                    kernel.admitProcess(p, clock);
                     it.remove();
                 }
             }
@@ -72,7 +72,23 @@ public class Simulator {
 				}
 			}
 
-            Kernel kernel = new Kernel(algo);
+			MemoryManagement memory = new ContiguousAllocation();
+
+			if (args.length > 1) {
+				String arg = args[1].toLowerCase();
+				memory = switch (arg) {
+					case "contiguous" -> new ContiguousAllocation();
+					case "paged" -> new PagedAllocation();
+					default -> null;
+				};
+
+				if (memory == null) {
+					System.out.printf("Chosen memory scheme \"%s\" does not exist!\n", arg);
+					System.exit(1);
+				}
+			}
+
+            Kernel kernel = new Kernel(algo, memory);
             Simulator sim = new Simulator(kernel, workload);
 
             sim.run();

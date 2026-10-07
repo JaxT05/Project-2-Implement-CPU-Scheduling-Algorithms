@@ -6,27 +6,31 @@ import java.util.List;
 
 public class Kernel {
     private final SchedulingAlgo algo;
+    private final MemoryManagement memory;
     private final List<Process> readyQueue = new ArrayList<>();
     private final List<Process> waitQueue = new ArrayList<>();
+    private final List<Process> memoryQueue = new ArrayList<>();
     private Process runningProcess = null;
     // Number of CPU ticks the running process has consumed since it was dispatched
     private int ticksUsedByRunning = 0;
 
-    public Kernel(SchedulingAlgo algo) {
+    public Kernel(SchedulingAlgo algo, MemoryManagement memory) {
         this.algo = algo;
+        this.memory = memory;
     }
 
-    public void admitProcess(Process p) {
-        //decide is there's sufficient memory to admit the process by calling a method of the memory management class
-        // if yes, admit the process and allocate memory to the process by calling a method of the memory management class
-        // a process will hold allocated memory space until it terminates
-        p.state = Process.State.READY;
-        algo.addProcess(readyQueue, p);
-        // if no, don't change the process state to ready or place it in the queue
-        //TODO: implement a separate queue (memory queue) and place the process there
+    public void admitProcess(Process p, int currentTime) {
+        if (memory.allocate(p)) {
+            p.state = Process.State.READY;
+            algo.addProcess(readyQueue, p);
+        } else {
+            // Not enough memory, hold the process until another process 
+			// terminates and releases memory
+            System.out.println("[Tick " + currentTime + "] Process " + p.pid
+                    + " waits in memory queue (needs " + p.size + " units).");
+            memoryQueue.add(p);
+        }
     }
-
-    // create a MemoryManagement class
 
     // Called on every clock tick
     public void onClockTick(int currentTime) {
@@ -127,11 +131,25 @@ public class Kernel {
     }
 
     private void terminateProcess(Process p, int currentTime) {
-        //release the memory space by calling a method of the memory management class
-        // also check if we can now admit one or more processes from the memory queue
+        memory.release(p);
         p.state = Process.State.TERMINATED;
         p.completionTime = currentTime;
         runningProcess = null;
+        admitFromMemoryQueue(currentTime);
+    }
+
+    private void admitFromMemoryQueue(int currentTime) {
+        Iterator<Process> it = memoryQueue.iterator();
+        while (it.hasNext()) {
+            Process p = it.next();
+            if (memory.allocate(p)) {
+                System.out.println("[Tick " + currentTime + "] Process " + p.pid
+                        + " admitted from memory queue.");
+                p.state = Process.State.READY;
+                algo.addProcess(readyQueue, p);
+                it.remove();
+            }
+        }
     }
 
     // Preempt the running process
