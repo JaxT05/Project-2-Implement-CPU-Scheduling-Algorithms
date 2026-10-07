@@ -8,7 +8,7 @@ public class Process {
 
     public final int pid;
     public final int arrivalTime;
-    public final int requiredMemory;
+    public final int size;
 
     public State state = State.NEW;
     public final List<Instruction> code;
@@ -17,16 +17,16 @@ public class Process {
     public int completionTime = -1;
 
     
-    /*
-     TODO:
-     size(limit register): read from the trace parser file
-     relocation register (base memory address): specified by the kernel
-     */
+    // required for Contiguous allocation only
+    public int baseAddress = -1;
 
-    public Process(int pid, int arrivalTime, int requiredMemory, List<Instruction> code) {
+    // required for Paged allocation only
+    public int[] pageTable = null;
+
+    public Process(int pid, int arrivalTime, int size, List<Instruction> code) {
         this.pid = pid;
         this.arrivalTime = arrivalTime;
-        this.requiredMemory = requiredMemory;
+        this.size = size;
         this.code = new ArrayList<>(code);
     }
 
