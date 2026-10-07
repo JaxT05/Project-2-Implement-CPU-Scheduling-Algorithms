@@ -1,11 +1,10 @@
 package minios;
 
-public class MemoryManagement {
-    
-       // create a MemoryManagement class, which does:
-        // - keeps track of free memory regions vs occupied memory regions
-        // - initializes with the entire memory space (100)
-        // - allocates memory space to processes, specify the relocation register
-        // - reclaims released memory space
+public interface MemoryManagement {
 
+    /** Allocate memory for p. */
+    boolean allocate(Process p);
+
+    /** Return p's memory to the free pool. */
+    void release(Process p);
 }
