@@ -54,6 +54,8 @@ public class Simulator {
 
     public static void main(String[] args) throws Exception{
             List<Process> workload = TraceParser.parseWorkload("workload.txt");
+            int MEMORY_SIZE = 120;
+            int PAGE_SIZE = 10;
 
 			SchedulingAlgo algo = new FCFS();
 
@@ -78,9 +80,10 @@ public class Simulator {
 				String arg = args[1].toLowerCase();
 				memory = switch (arg) {
 					case "contiguous" -> new ContiguousAllocation();
-					case "paged" -> new PagedAllocation();
+					case "paged" -> new PagedAllocation(MEMORY_SIZE, PAGE_SIZE);
 					default -> null;
 				};
+
 
 				if (memory == null) {
 					System.out.printf("Chosen memory scheme \"%s\" does not exist!\n", arg);
