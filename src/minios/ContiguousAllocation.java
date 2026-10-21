@@ -13,7 +13,7 @@ public class ContiguousAllocation implements MemoryManagement {
     }
 
     @Override
-    public boolean allocate(Process p) {
+    public boolean allocate(Process p, int currentTime) {
         // TODO: put process in first fitting space
 
         for (int i = 0; i < freelist.size(); i++){
@@ -32,16 +32,15 @@ public class ContiguousAllocation implements MemoryManagement {
                             size - p.size
                     });
                 }
+                System.out.println("[Tick " + currentTime + "] Process " + p.pid + " allocated block starting at " + start + " with size " + p.size);
                 return true;
             }
-
         }
-
         return false;
     }
 
     @Override
-    public void release(Process p) {
+    public void release(Process p, int currentTime) {
         // TODO: free process from list with coalescing
         if (p.baseAddress != -1){
             freelist.add(new int[]{
@@ -51,6 +50,8 @@ public class ContiguousAllocation implements MemoryManagement {
 
             //sort region by start address
             freelist.sort((a, b) -> Integer.compare(a[0], b[0]));
+
+            System.out.println("[Tick " + currentTime + "] Process " + p.pid + " released block starting at " + p.baseAddress + " with size " + p.size + ".");
 
             //merge free regions
             int i = 0;
@@ -64,8 +65,11 @@ public class ContiguousAllocation implements MemoryManagement {
                 int size2 = block2[1];
 
                 if (start1 + size1 == start2){
+                    System.out.println("[Tick " + currentTime + "] Coalescing blocks starting at " + start1 + " with size " + size1 + " and " + start2 + " with size " + size2 + ".");
                     block1[1] = size1 + size2;
                     freelist.remove(i+1);
+                    System.out.print("[Tick " + currentTime + "] After Coalescing - ");
+                    printFreeList();
                 }
                 else {
                     i++;
@@ -73,5 +77,20 @@ public class ContiguousAllocation implements MemoryManagement {
             }
             p.baseAddress = -1;
         }
+    }
+    public void printFreeList() {
+        System.out.print(" Free blocks: ");
+        for (int[] block : freelist) {
+            System.out.print("[Size: " + block[1] + ", Starting Address: " + block[0] + "]");
+            if (block != freelist.getLast()) {
+                System.out.print(", ");
+            }
+            else {
+                System.out.println(".");
+            }
+        }
+    if (freelist.isEmpty()) {
+        System.out.println("None.");
+    }
     }
 }

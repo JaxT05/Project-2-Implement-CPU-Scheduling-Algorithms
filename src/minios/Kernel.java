@@ -20,14 +20,20 @@ public class Kernel {
     }
 
     public void admitProcess(Process p, int currentTime) {
-        if (memory.allocate(p)) {
+        if (memory.allocate(p, currentTime)) {
             p.state = Process.State.READY;
             algo.addProcess(readyQueue, p);
         } else {
             // Not enough memory, hold the process until another process 
 			// terminates and releases memory
-            System.out.println("[Tick " + currentTime + "] Process " + p.pid
+            System.out.print("[Tick " + currentTime + "] Process " + p.pid
                     + " waits in memory queue (needs " + p.size + " units).");
+            // for contiguous allocation, print out all free block sizes (should all be smaller than what the process needs) and the starting address of each free block; for paged allocation, print out the total number of free frames.
+            if (memory instanceof ContiguousAllocation contiguousAllocation) {
+                    contiguousAllocation.printFreeList();
+            } else if (memory instanceof PagedAllocation pagedAllocation) {
+                pagedAllocation.printPageTable(p, currentTime);
+            }
             memoryQueue.add(p);
         }
     }
@@ -131,7 +137,7 @@ public class Kernel {
     }
 
     private void terminateProcess(Process p, int currentTime) {
-        memory.release(p);
+        memory.release(p, currentTime);
         p.state = Process.State.TERMINATED;
         p.completionTime = currentTime;
         runningProcess = null;
@@ -142,7 +148,7 @@ public class Kernel {
         Iterator<Process> it = memoryQueue.iterator();
         while (it.hasNext()) {
             Process p = it.next();
-            if (memory.allocate(p)) {
+            if (memory.allocate(p, currentTime)) {
                 System.out.println("[Tick " + currentTime + "] Process " + p.pid
                         + " admitted from memory queue.");
                 p.state = Process.State.READY;

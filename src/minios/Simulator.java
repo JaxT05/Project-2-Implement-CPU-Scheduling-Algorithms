@@ -9,6 +9,8 @@ public class Simulator {
     private final List<Process> incomingProcesses;
     private final List<Process> allProcesses;
     private int clock = 0;
+    final static int MEMORY_SIZE = 120;
+    final static int PAGE_SIZE = 10;
 
     public Simulator(Kernel kernel, List<Process> processes) {
         this.kernel = kernel;
@@ -26,7 +28,7 @@ public class Simulator {
             while (it.hasNext()) {
                 Process p = it.next();
                 if (p.arrivalTime == clock) {
-                    System.out.println("[Tick " + clock + "] Process " + p.pid + " arrives.");
+                    System.out.println("[Tick " + clock + "] Process " + p.pid + " arrives (" + p.size + " units)." );
                     kernel.admitProcess(p, clock);
                     it.remove();
                 }
@@ -48,14 +50,13 @@ public class Simulator {
         for (Process p : allProcesses) {
             totalWaiting += p.waitingTime;
         }
-        System.out.printf("Average waiting time: %.2f ticks%n",
+        System.out.printf("Average Ready Queue waiting time: %.2f ticks%n",
                 totalWaiting / allProcesses.size());
     }
 
     public static void main(String[] args) throws Exception{
             List<Process> workload = TraceParser.parseWorkload("workload.txt");
-            int MEMORY_SIZE = 120;
-            int PAGE_SIZE = 10;
+
 
 			SchedulingAlgo algo = new FCFS();
 
