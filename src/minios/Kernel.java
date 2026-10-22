@@ -94,6 +94,10 @@ public class Kernel {
                     p.waitingTime++;
                 }
 
+                for (Process p : memoryQueue) {
+                    p.memoryQueueWaitingTime++;
+                }
+
                 // Preemption check
                 ticksUsedByRunning++;
                 if (runningProcess.getCurrentInstruction() != null

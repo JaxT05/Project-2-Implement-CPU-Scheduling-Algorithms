@@ -47,11 +47,14 @@ public class Simulator {
     // Average time each process spent waiting in the Ready Queue
     private void printAverageWaitingTime() {
         double totalWaiting = 0;
+        double totalMemoryQueueWaiting = 0;
+        
         for (Process p : allProcesses) {
             totalWaiting += p.waitingTime;
+            totalMemoryQueueWaiting += p.memoryQueueWaitingTime;
         }
-        System.out.printf("Average Ready Queue waiting time: %.2f ticks%n",
-                totalWaiting / allProcesses.size());
+        System.out.printf("Average Ready Queue waiting time: %.2f ticks%nAverage Memory Queue waiting time %.2f ticks%n",
+                totalWaiting / allProcesses.size(), totalMemoryQueueWaiting / allProcesses.size());
     }
 
     public static void main(String[] args) throws Exception{

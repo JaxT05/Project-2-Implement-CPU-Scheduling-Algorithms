@@ -73,7 +73,7 @@ public class PagedAllocation implements MemoryManagement {
             if (p.pageTable[i] != -1) {
                 System.out.print("Frame " + p.pageTable[i]);
             } else {
-                System.out.print("Unmapped");
+                System.out.print("Free");
             }
             System.out.print("]");
             if (i < p.pageTable.length - 1) {

@@ -14,6 +14,7 @@ public class Process {
     public final List<Instruction> code;
     public int programCounter = 0;
     public int waitingTime = 0;
+    public int memoryQueueWaitingTime = 0;
     public int completionTime = -1;
 
     
