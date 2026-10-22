@@ -78,12 +78,12 @@ public class Simulator {
 				}
 			}
 
-			MemoryManagement memory = new ContiguousAllocation();
+			MemoryManagement memory = new ContiguousAllocation(MEMORY_SIZE);
 
 			if (args.length > 1) {
 				String arg = args[1].toLowerCase();
 				memory = switch (arg) {
-					case "contiguous" -> new ContiguousAllocation();
+					case "contiguous" -> new ContiguousAllocation(MEMORY_SIZE);
 					case "paged" -> new PagedAllocation(MEMORY_SIZE, PAGE_SIZE);
 					default -> null;
 				};

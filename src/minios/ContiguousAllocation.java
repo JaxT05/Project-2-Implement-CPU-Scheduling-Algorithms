@@ -4,12 +4,10 @@ import java.util.LinkedList;
 
 public class ContiguousAllocation implements MemoryManagement {
 
-    // TODO: initialize the free list with the entire memory space (100 units)
-
     public LinkedList<int[]> freelist = new LinkedList<>();
 
-    public ContiguousAllocation() {
-        freelist.add(new int[]{0, 100});
+    public ContiguousAllocation(int memorySize) {
+        freelist.add(new int[]{0, memorySize});
     }
 
     @Override
