@@ -37,6 +37,7 @@ public class PagedAllocation implements MemoryManagement {
                 allocatedPages++;
             }
         }
+        printPageTable(p, currentTime);
         System.out.println("[Tick " + currentTime + "] Process " + p.pid + " allocated " + processPageNumber + " pages.");
         return true;
     }
