@@ -12,8 +12,6 @@ public class ContiguousAllocation implements MemoryManagement {
 
     @Override
     public boolean allocate(Process p, int currentTime) {
-        // TODO: put process in first fitting space
-
         for (int i = 0; i < freelist.size(); i++){
             int[] block = freelist.get(i);
 
@@ -39,7 +37,6 @@ public class ContiguousAllocation implements MemoryManagement {
 
     @Override
     public void release(Process p, int currentTime) {
-        // TODO: free process from list with coalescing
         if (p.baseAddress != -1){
             freelist.add(new int[]{
                     p.baseAddress,
