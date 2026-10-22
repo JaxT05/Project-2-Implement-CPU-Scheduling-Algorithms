@@ -186,6 +186,7 @@ public class Kernel {
     public boolean isIdle() {
         return runningProcess == null &&
                 readyQueue.isEmpty() &&
-                waitQueue.isEmpty();
+                waitQueue.isEmpty() &&
+                memoryQueue.isEmpty();
     }
 }
