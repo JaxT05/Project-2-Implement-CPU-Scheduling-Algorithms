@@ -28,11 +28,10 @@ public class Kernel {
 			// terminates and releases memory
             System.out.print("[Tick " + currentTime + "] Process " + p.pid
                     + " waits in memory queue (needs " + p.size + " units).");
-            // for contiguous allocation, print out all free block sizes (should all be smaller than what the process needs) and the starting address of each free block; for paged allocation, print out the total number of free frames.
             if (memory instanceof ContiguousAllocation contiguousAllocation) {
-                    contiguousAllocation.printFreeList();
+                contiguousAllocation.printFreeList();
             } else if (memory instanceof PagedAllocation pagedAllocation) {
-                pagedAllocation.printPageTable(p, currentTime);
+                pagedAllocation.printFreeFrames(p, currentTime);
             }
             memoryQueue.add(p);
         }
