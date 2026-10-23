@@ -4,6 +4,35 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* TODO: Project 4 - 
+
+    Modification to Trace Format and Instruction OpType:
+    The old CPU instruction is replaced by three more specific instructions:
+    COMPUTE n: an instruction that only utilizes CPU and not memory (in practice, this
+    would be an arithmetic or logic instruction)
+    STORE addr value: an instruction that stores the given value at the given virtual
+    address. This instruction is always 1 tick.
+    LOAD addr: an instruction that loads the value stored at the given virtual address.
+    This instruction is always 1 tick. In the trace, a LOAD always come after a STORE to
+    the same virtual address.
+    The above three instructions are all CPU instructions, so a CPU burst is now a run of
+    these instructions.
+    We provide the updated workload trace, and the updated TraceParser and
+    Instruction classes.
+    
+    Required Output:
+    - Each message should start with a timestamp [Tick X]
+    - Each time a virtual address is translated, print out both the virtual and physical
+    addresses
+    - Each time a LOAD instruction executes, print out the value loaded
+    - Each time an invalid address is detected when executing a STORE or LOAD
+    instruction, print out a warning message including the process ID and the
+    instruction details.
+
+    This implementation will break SJF and RR due to how CPU instructions are now handled. 
+    SJF and RR can be fixed to accommodate this but it's doesn't have to be within the scope of this project
+ */
+
 public class Simulator {
     private final Kernel kernel;
     private final List<Process> incomingProcesses;

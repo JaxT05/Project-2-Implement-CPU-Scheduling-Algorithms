@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* TODO: Project 4 - 
+    Kernel now needs to specifically handle the STORE and LOAD instructions because
+    they require memory access
+*/
+
 public class Kernel {
     private final SchedulingAlgo algo;
     private final MemoryManagement memory;

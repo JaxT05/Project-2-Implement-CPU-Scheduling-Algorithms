@@ -3,6 +3,17 @@ package minios;
 import java.util.ArrayList;
 import java.util.List;
 
+
+ /* TODO: Project 4 -
+    Because there is no longer a separate CPU instruction, the CPU burst is now a run
+    of consecutive COMPUTE/STORE/LOAD instructions.
+    - We provide the updated Process class which now contains a new method
+    currentCPUBurstLength() for returning the current CPU burst length, needed for SJF
+    scheduling. (However, you’re not required to retro-Rit your CPU scheduling
+    algorithm implementation; the grading of this project will only be based on FCFS.)
+ */
+
+
 public class Process {
     public enum State { NEW, READY, RUNNING, BLOCKED, TERMINATED }
 
