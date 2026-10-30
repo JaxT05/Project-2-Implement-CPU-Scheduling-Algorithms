@@ -1,5 +1,6 @@
 package minios;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ public class Kernel {
     private final List<Process> readyQueue = new ArrayList<>();
     private final List<Process> waitQueue = new ArrayList<>();
     private final List<Process> memoryQueue = new ArrayList<>();
+    private final int[] physicalMemory = new int[120];
     private Process runningProcess = null;
     // Number of CPU ticks the running process has consumed since it was dispatched
     private int ticksUsedByRunning = 0;

@@ -39,5 +39,16 @@ public class Process {
         }
     }
 
-
+    // Total length of the current CPU burst
+    // A CPU burst is a run of consecutive COMPUTE/LOAD/STORE instructions
+    public int currentCPUBurstLength() {
+        int total = 0;
+        for (int i = programCounter; i < code.size(); i++) {
+            Instruction in = code.get(i);
+            // All instructions except IO are CPU instructions
+            if (in.type == Instruction.OpType.IO) break;
+            total += in.remainingTicks;
+        }
+        return total;
+    }
 }
