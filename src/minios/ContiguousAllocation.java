@@ -73,6 +73,13 @@ public class ContiguousAllocation implements MemoryManagement {
             p.baseAddress = -1;
         }
     }
+
+    // TODO: still needs to be implemented
+    @Override
+    public int translate(Process p, int addr) {
+        return -1;
+    }
+
     public void printFreeList() {
         System.out.print(" Free blocks: ");
         for (int[] block : freelist) {

@@ -87,9 +87,11 @@ public class Kernel {
                 inst.remainingTicks--;
                 cpuCycleUsed = true;
                 if (inst.remainingTicks == 0) {
-                    // The instruction now finishes; load the next
-                    // instruction.
-                    runningProcess.programCounter++;
+                    if (inst.type == Instruction.OpType.STORE || inst.type == Instruction.OpType.LOAD) {
+                        executeMemoryInstruction(inst, currentTime);
+                    } else {
+                        runningProcess.programCounter++;
+                    }
                 }
 
                 // Every process still sitting in the Ready Queue has been waiting during this CPU cycle.
@@ -102,8 +104,10 @@ public class Kernel {
                 }
 
                 // Preemption check
+                // (plus runningProcess may have just been terminated by an invalid STORE/LOAD)
                 ticksUsedByRunning++;
-                if (runningProcess.getCurrentInstruction() != null
+                if (runningProcess != null
+                        && runningProcess.getCurrentInstruction() != null
                         && algo.shouldPreempt(runningProcess, ticksUsedByRunning, currentTime)) {
                     preemptRunningProcess(currentTime);
                 }
@@ -140,6 +144,40 @@ public class Kernel {
                 }
             }
         }
+    }
+
+    // Execute a STORE or LOAD instruction for the running process
+    private void executeMemoryInstruction(Instruction inst, int currentTime) {
+        int physAddr = memory.translate(runningProcess, inst.address);
+
+		// Invalid virtual address
+        if (physAddr == -1) {
+            System.out.println("[Tick " + currentTime + "] WARNING: Process "
+                    + runningProcess.pid + " " + inst.type
+                    + " instruction with invalid virtual address " + inst.address
+                    + (inst.type == Instruction.OpType.STORE ? " and value " + inst.value : "")
+                    + "; aborting instruction.");
+            System.out.println("[Tick " + currentTime + "] Process "
+                    + runningProcess.pid + " Terminates.");
+
+            runningProcess.programCounter++;
+            terminateProcess(runningProcess, currentTime);
+
+            return;
+        }
+
+        System.out.println("[Tick " + currentTime + "] Process " + runningProcess.pid
+                + " " + inst.type + ": virtual address " + inst.address
+                + " -> physical address " + physAddr);
+
+        if (inst.type == Instruction.OpType.STORE) {
+            physicalMemory[physAddr] = inst.value;
+        } else {
+            System.out.println("[Tick " + currentTime + "] Process " + runningProcess.pid
+                    + " LOAD loaded value " + physicalMemory[physAddr]);
+        }
+
+        runningProcess.programCounter++;
     }
 
     private void terminateProcess(Process p, int currentTime) {

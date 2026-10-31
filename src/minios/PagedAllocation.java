@@ -54,6 +54,12 @@ public class PagedAllocation implements MemoryManagement {
         p.pageTable = null;
     }
 
+    // TODO: still needs to be implemented
+    @Override
+    public int translate(Process p, int addr) {
+        return -1;
+    }
+
     public void printFreeFrames(Process p, int currentTime) {
         int freeFrameCount = 0;
         for (boolean isFreeFrame : freeFrames) {
