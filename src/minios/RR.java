@@ -27,6 +27,6 @@ public class RR implements SchedulingAlgo {
         Instruction next = running.getCurrentInstruction();
         return ticksUsed >= TIME_QUANTUM
                 && next != null
-                && next.type == Instruction.OpType.CPU;
+                && next.type != Instruction.OpType.IO;
     }
 }
