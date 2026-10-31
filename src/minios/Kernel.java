@@ -11,14 +11,15 @@ public class Kernel {
     private final List<Process> readyQueue = new ArrayList<>();
     private final List<Process> waitQueue = new ArrayList<>();
     private final List<Process> memoryQueue = new ArrayList<>();
-    private final int[] physicalMemory = new int[120];
+    private final int[] physicalMemory;
     private Process runningProcess = null;
     // Number of CPU ticks the running process has consumed since it was dispatched
     private int ticksUsedByRunning = 0;
 
-    public Kernel(SchedulingAlgo algo, MemoryManagement memory) {
+    public Kernel(SchedulingAlgo algo, MemoryManagement memory, int memorySize) {
         this.algo = algo;
         this.memory = memory;
+        this.physicalMemory = new int[memorySize];
     }
 
     public void admitProcess(Process p, int currentTime) {

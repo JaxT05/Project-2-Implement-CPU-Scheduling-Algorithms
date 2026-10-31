@@ -95,7 +95,7 @@ public class Simulator {
 				}
 			}
 
-            Kernel kernel = new Kernel(algo, memory);
+            Kernel kernel = new Kernel(algo, memory, MEMORY_SIZE);
             Simulator sim = new Simulator(kernel, workload);
 
             sim.run();
