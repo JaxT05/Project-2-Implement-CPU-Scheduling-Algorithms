@@ -74,10 +74,13 @@ public class ContiguousAllocation implements MemoryManagement {
         }
     }
 
-    // TODO: still needs to be implemented
+
     @Override
-    public int translate(Process p, int addr) {
-        return -1;
+    public int translate(Process p, int addr){
+        if (addr < 0 || addr >= p.size || p.baseAddress == -1){
+            return -1;
+        }
+        return p.baseAddress + addr;
     }
 
     public void printFreeList() {
