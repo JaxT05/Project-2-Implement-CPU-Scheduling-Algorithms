@@ -1,6 +1,5 @@
 package minios;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -167,7 +166,7 @@ public class Kernel {
         }
 
         System.out.println("[Tick " + currentTime + "] Process " + runningProcess.pid
-                + " " + inst.type + ": virtual address " + inst.address
+                + " TRANSLATE: virtual address " + inst.address
                 + " -> physical address " + physAddr);
 
         if (inst.type == Instruction.OpType.STORE) {

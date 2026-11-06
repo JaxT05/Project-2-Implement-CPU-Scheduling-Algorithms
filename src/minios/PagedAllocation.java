@@ -54,10 +54,19 @@ public class PagedAllocation implements MemoryManagement {
         p.pageTable = null;
     }
 
-    // TODO: still needs to be implemented
     @Override
     public int translate(Process p, int addr) {
-        return -1;
+        int pageNumber = addr / PAGE_SIZE;
+        int pageOffset = addr % PAGE_SIZE;
+
+        if (p.pageTable == null || pageNumber < 0 || pageNumber >= p.pageTable.length) return -1;
+
+        int frameNumber = p.pageTable[pageNumber];
+        
+        if (frameNumber == -1) return -1;
+        
+        int physicalAddr = (PAGE_SIZE * frameNumber) + pageOffset;
+        return physicalAddr;
     }
 
     public void printFreeFrames(Process p, int currentTime) {

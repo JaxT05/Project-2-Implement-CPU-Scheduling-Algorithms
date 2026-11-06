@@ -8,8 +8,8 @@ public class SJF implements SchedulingAlgo {
     public void addProcess(List<Process> readyQueue, Process p) {
         // Add process to queue by comparing the burst length of the next CPU instruction.
         int index = 0;
-        int nextProcessBurst = p.getCurrentInstruction().remainingTicks;
-        while (index < readyQueue.size() && readyQueue.get(index).getCurrentInstruction().remainingTicks <= nextProcessBurst) {
+        int nextProcessBurst = p.currentCPUBurstLength();
+        while (index < readyQueue.size() && readyQueue.get(index).currentCPUBurstLength() <= nextProcessBurst) {
             index++;
         }
         readyQueue.add(index, p);
